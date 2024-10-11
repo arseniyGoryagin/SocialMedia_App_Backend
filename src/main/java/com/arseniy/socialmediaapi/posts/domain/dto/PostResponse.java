@@ -1,16 +1,29 @@
 package com.arseniy.socialmediaapi.posts.domain.dto;
 
-import com.arseniy.socialmediaapi.posts.domain.model.Post;
+
+import com.arseniy.socialmediaapi.user.domain.dto.UserResponse;
+import com.arseniy.socialmediaapi.user.domain.model.User;
+import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 
-import java.util.List;
 
+@Builder
 @Data
-@RequiredArgsConstructor
 public class PostResponse {
 
-    private final Post post;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private  Long id;
+
+    private String body;
+
+    private Long likes;
+
+    private UserResponse user;
+
+    private Boolean edited;
 
 
 }
