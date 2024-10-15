@@ -28,7 +28,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query(value = "UPDATE posts_table set body = :newBody where id = :id", nativeQuery = true)
     void editPost(@Param("id")Long id, @Param("newBody")String newBody);
 
-    @Query(value = "Select * from posts_table where username = :username  limit :limit offset :offset", nativeQuery = true)
+    @Query(value = "Select p.*, u.id as users_id from posts_table p inner join user_table u on p.user_id = u.id where u.username =:username  limit :limit offset :offset",
+            nativeQuery = true)
     List<Post> getUserPosts(@Param("username")String username, @PathParam("limit") Long limit, @PathParam("offset") Long offset);
 
 }
