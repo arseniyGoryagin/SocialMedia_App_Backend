@@ -8,6 +8,9 @@ import com.arseniy.socialmediaapi.user.services.UserService;
 import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -17,6 +20,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -24,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+
 
 
     @GetMapping("/{username}")
@@ -43,6 +49,20 @@ public class UserController {
 
 
         return new ResponseEntity<>(userResponse, HttpStatus.OK);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<Page<UserResponse>> searchUser(@RequestParam("username") String searchUsername, @RequestParam("page") int page, @RequestParam("size") int size){
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        User user = (User) authentication.getPrincipal();
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<UserResponse> users  = userService.searchUsers(searchUsername, user.getUsername(), pageable );
+
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
     @GetMapping("/me")
@@ -66,6 +86,9 @@ public class UserController {
 
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleUserNotFound(UsernameNotFoundException e){
+
+        log.info(e.getLocalizedMessage());
+
         ErrorResponse resp  = new ErrorResponse();
         resp.setMessage(e.getLocalizedMessage());
         return new ResponseEntity<>(resp, HttpStatus.NOT_FOUND);
@@ -73,6 +96,8 @@ public class UserController {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleUserException(Exception e){
+
+        log.error(e.getLocalizedMessage());
 
         ErrorResponse error = new ErrorResponse();
         error.setMessage(e.getLocalizedMessage());
