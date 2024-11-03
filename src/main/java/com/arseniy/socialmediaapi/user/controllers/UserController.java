@@ -2,6 +2,9 @@ package com.arseniy.socialmediaapi.user.controllers;
 
 
 import com.arseniy.socialmediaapi.auth.domain.dto.ErrorResponse;
+import com.arseniy.socialmediaapi.auth.domain.exceptions.UserException;
+import com.arseniy.socialmediaapi.like.domain.model.Like;
+import com.arseniy.socialmediaapi.posts.domain.dto.PostResponse;
 import com.arseniy.socialmediaapi.user.domain.dto.UserResponse;
 import com.arseniy.socialmediaapi.user.domain.model.User;
 import com.arseniy.socialmediaapi.user.services.UserService;
@@ -21,6 +24,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -31,24 +36,76 @@ public class UserController {
     private final UserService userService;
 
 
+    @GetMapping("/{username}/followers")
+    public ResponseEntity<Page<UserResponse>> getUserFollowers(@PathVariable("username") String username, @RequestParam("page") int page, @RequestParam("size") int size) throws UserException {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User me = (User) authentication.getPrincipal();
+
+        Pageable pageable = PageRequest.of(page, size);
+        log.info("size = " + size);
+        log.info("pagewnum = " + page);
+        log.info("folowers " + userService.getUserFollowersList(username, pageable).toString());
+        log.info("folowers page " + userService.getUserFollowers(username, pageable).getContent());
+
+
+        var userRespPage  = userService.getUserFollowers(username, pageable).map(resp -> {
+                    resp.setIsOwn(Objects.equals(me.getUsername(), resp.getUsername()));
+                    return resp;
+                }
+        );
+
+
+        return new ResponseEntity<>(userRespPage, HttpStatus.OK);
+    }
+
+    @GetMapping("/{username}/following")
+    public ResponseEntity<Page<UserResponse>> getUserFollows(@PathVariable("username") String username, @RequestParam("page") int page, @RequestParam("size") int size) throws UserException {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User me = (User) authentication.getPrincipal();
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        log.info("size = " + size);
+        log.info("pagewnum = " + page);
+        log.info("folowing " + userService.getUserFollows(username, pageable).getContent().toString());
+
+
+        var userRespPage  = userService.getUserFollowers(username, pageable).map(resp -> {
+                    resp.setIsOwn(Objects.equals(me.getUsername(), resp.getUsername()));
+                    return resp;
+                }
+        );
+
+        return new ResponseEntity<>(userRespPage, HttpStatus.OK);
+    }
+
+
 
     @GetMapping("/{username}")
-    public ResponseEntity<UserResponse> getUser(@PathVariable("username") String username){
-
-        log.info("in controller =- " + username);
-
-        User user = (User) userService.getByUsername(username);
+    public ResponseEntity<UserResponse> getUser(@PathVariable("username") String username) throws UserException {;
 
 
-        UserResponse userResponse = UserResponse.builder()
-                .id(user.getId())
-                .username(user.getUsername())
-                .description(user.getDescription())
-                .profilePicture(user.getProfilePicture())
-                .build();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
+        User me = (User) authentication.getPrincipal();
 
-        return new ResponseEntity<>(userResponse, HttpStatus.OK);
+        Optional<User> user = userService.findByUsername(username);
+
+        if(user.isEmpty()){
+            throw new UserException("No such user");
+        }
+
+        var resp = userService.getUserAsResponse(user.get().getUsername(), me.getUsername());
+
+        if(Objects.equals(resp.getUsername(), me.getUsername())){
+            resp.setIsOwn(true);
+        }else{
+            resp.setIsOwn(false);
+        }
+
+        return new ResponseEntity<>(resp, HttpStatus.OK);
     }
 
     @GetMapping("/search")
@@ -72,14 +129,10 @@ public class UserController {
 
         User user = (User) authentication.getPrincipal();
 
-        UserResponse userResponse = UserResponse.builder()
-                .id(user.getId())
-                .username(user.getUsername())
-                .description(user.getDescription())
-                .profilePicture(user.getProfilePicture())
-                .build();
+        var resp = userService.getUserAsResponse(user.getUsername(), null);
+        resp.setIsOwn(true);
 
-        return new ResponseEntity<>(userResponse, HttpStatus.OK);
+        return new ResponseEntity<>(resp, HttpStatus.OK);
     }
 
 

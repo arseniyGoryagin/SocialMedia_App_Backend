@@ -15,5 +15,4 @@ public interface UpdateRepository extends JpaRepository<Update, Long> {
     @Query(value = "Select * from updates_table where username = :username limit :limit offset :offset", nativeQuery = true)
     List<Update> getAllUserUpdates(@Param("username") String username, @Param("limit") Long limit, @Param("offset") Long offset);
 
-
 }

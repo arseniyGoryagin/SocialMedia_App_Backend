@@ -27,10 +27,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<TokenResponse> register(@Valid @RequestBody RegisterRequest request) throws UserException {
-
-        log.info("Request " + request.toString());
-
-        String token = authService.register(request.getUsername(), request.getPassword(), request.getEmail());
+        String token = authService.register(request.getUsername(), request.getPassword(), request.getEmail(), request.getName());
         return new ResponseEntity<>(new TokenResponse(token), HttpStatus.OK);
     }
 

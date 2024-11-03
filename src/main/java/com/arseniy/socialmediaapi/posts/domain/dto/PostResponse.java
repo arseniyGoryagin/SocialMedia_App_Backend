@@ -7,6 +7,8 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 
 @Builder
 @Data
@@ -20,10 +22,15 @@ public class PostResponse {
     private String body;
 
     private Long likes;
+    private Boolean liked;
 
-    private UserResponse user;
+    private String username;
+    private String name;
+    private String profilePicture;
 
     private Boolean edited;
+
+    private LocalDateTime timePosted;
 
 
 }

@@ -1,6 +1,7 @@
 package com.arseniy.socialmediaapi.user.domain.model;
 
 
+import com.arseniy.socialmediaapi.user.domain.dto.UserResponse;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,11 +15,11 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Table(name = "user_table")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "user_table")
 public class User implements UserDetails {
 
 
@@ -32,9 +33,8 @@ public class User implements UserDetails {
     Long id;
 
     private String password;
-
-
     private String username;
+    private String name;
     private String description = "";
     private String profilePicture = "";
 

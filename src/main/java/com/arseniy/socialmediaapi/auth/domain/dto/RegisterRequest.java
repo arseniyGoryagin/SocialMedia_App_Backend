@@ -18,8 +18,9 @@ public class RegisterRequest {
     @Size(min = 5, max = 255)
     private String password;
 
-
     @Email(message = "invalid email")
     private String email;
+
+    private String name;
 
 }

@@ -34,13 +34,7 @@ public class AuthorizationService {
 
 
 
-    public String register(String username, @NotNull String password, String email) throws UserException {
-
-
-
-        log.info("PASWORD + "+ password);
-        log.info("username + "+ username);
-
+    public String register(String username,  String password, String email, String name) throws UserException {
 
         // Validate if user have is already registered
 
@@ -65,11 +59,9 @@ public class AuthorizationService {
         newUser.setEmail(email);
         newUser.setPassword(passwordEncoder.encode(password));
         newUser.setRole(User.Role.USER);
-
-        log.info(newUser.toString());
+        newUser.setName(name);
 
         userRepository.save(newUser);
-
 
         // Generate token
 
