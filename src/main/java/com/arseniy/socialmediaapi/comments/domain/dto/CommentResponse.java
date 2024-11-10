@@ -9,8 +9,7 @@ import java.util.List;
 
 @Data
 @RequiredArgsConstructor
-public class CommentsResponse {
-
+public class CommentResponse {
     private final List<Comment> comment;
 
 }
