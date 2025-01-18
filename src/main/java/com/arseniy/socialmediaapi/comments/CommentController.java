@@ -1,11 +1,18 @@
 package com.arseniy.socialmediaapi.comments;
 
 
+import com.arseniy.socialmediaapi.auth.domain.TokenResponse;
 import com.arseniy.socialmediaapi.comments.domain.CommentRequest;
 import com.arseniy.socialmediaapi.comments.domain.CommentResponse;
 import com.arseniy.socialmediaapi.exceptions.NoSuchException;
 import com.arseniy.socialmediaapi.exceptions.NotAllowedException;
 import com.arseniy.socialmediaapi.util.Util;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.Table;
 import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,13 +26,14 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/comments")
-@Slf4j
+@Tag(name = "Comments")
 public class CommentController {
 
 
     private final CommentService commentService;
 
-
+    @Operation(summary = "Get comments on post")
+    @ApiResponse(responseCode = "200", description = "Comments retrieved", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TokenResponse.class)))
     @GetMapping("/{postId}")
     public ResponseEntity<Page<CommentResponse>> getComments(@PathVariable("postId") Long id, @PathParam("page") int page, @PathParam("size") int size){
 
@@ -38,6 +46,10 @@ public class CommentController {
         return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
+
+    @Operation(summary = "Make a comment")
+    @ApiResponse(responseCode = "200", description = "Comment made", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CommentResponse.class)))
+    @GetMapping("/{postId}")
     @PostMapping()
     public ResponseEntity<CommentResponse> addComment(@RequestBody CommentRequest request) throws NoSuchException {
 
@@ -45,13 +57,14 @@ public class CommentController {
 
         CommentResponse comment = commentService.addComment(currentUserUsername, request.getPostId(), request.getBody());
 
-        log.info(comment.toString());
-
         return new ResponseEntity<>(comment, HttpStatus.OK);
 
     }
 
 
+    @Operation(summary = "Delete comment")
+    @ApiResponse(responseCode = "200", description = "Comment deleted", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)))
+    @GetMapping("/{postId}")
     @DeleteMapping("/{comId}")
     public ResponseEntity<String> deleteComment(@PathVariable("comId") Long comId) throws NotAllowedException, NoSuchException {
 
@@ -61,31 +74,6 @@ public class CommentController {
 
         return new ResponseEntity<>("Comment deleted", HttpStatus.OK);
     }
-
-
-
-    /*@PutMapping("/{comId}")
-    public ResponseEntity<String> editComment(@PathVariable("comId") Long comId, @RequestBody EditCommentRequest request) throws UserException {
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        User user = (User) authentication.getPrincipal();
-
-
-        Optional<Comment> comment = commentService.getComment(comId);
-
-        if(comment.isEmpty()){
-            throw new UserException("No such comment");
-        }
-
-        if(!comment.get().getUsername().equals(user.getUsername())){
-            throw new UserException("Cannot delete someone else's comment");
-        }
-
-        commentService.editComment(comId, request.getBody());
-
-        return new ResponseEntity<>("Comment deleted", HttpStatus.OK);
-    }*/
 
 
 }
