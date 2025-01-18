@@ -1,7 +1,7 @@
 package com.arseniy.socialmediaapi.exceptions;
 
-public class NoSuchPostException extends Exception{
-    public NoSuchPostException(){
-        super();
+public class NoSuchException extends Exception{
+    public NoSuchException(String message){
+        super(message);
     }
 }

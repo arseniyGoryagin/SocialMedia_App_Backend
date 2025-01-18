@@ -1,8 +1,7 @@
-package com.arseniy.socialmediaapi.auth.config;
+package com.arseniy.socialmediaapi.config;
 
 
-import com.arseniy.socialmediaapi.jwt.JwtAuthenticationFilter;
-import com.arseniy.socialmediaapi.user.services.UserService;
+import com.arseniy.socialmediaapi.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
