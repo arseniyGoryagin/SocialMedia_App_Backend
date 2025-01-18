@@ -49,7 +49,6 @@ public class CommentController {
 
     @Operation(summary = "Make a comment")
     @ApiResponse(responseCode = "200", description = "Comment made", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CommentResponse.class)))
-    @GetMapping("/{postId}")
     @PostMapping()
     public ResponseEntity<CommentResponse> addComment(@RequestBody CommentRequest request) throws NoSuchException {
 
@@ -64,7 +63,6 @@ public class CommentController {
 
     @Operation(summary = "Delete comment")
     @ApiResponse(responseCode = "200", description = "Comment deleted", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)))
-    @GetMapping("/{postId}")
     @DeleteMapping("/{comId}")
     public ResponseEntity<String> deleteComment(@PathVariable("comId") Long comId) throws NotAllowedException, NoSuchException {
 
