@@ -11,17 +11,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-    @Query(value =
-            "Select * " +
-            "from posts_table " +
-            "order by time_posted desc",
-            countQuery = "Select Count(*) from posts_table",
-            nativeQuery = true)
-    Page<Post> getPosts(Pageable pageable);
 
     @Query(value =
             "Select * " +
@@ -37,25 +32,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
                     "where u.username  = :username",
             nativeQuery = true)
     Page<Post> getFeed(@Param("username") String username, Pageable pageable);
-
-    @Modifying
-    @Transactional
-    @Query(value = "UPDATE posts_table set body = :newBody where id = :id", nativeQuery = true)
-    void editPost(@Param("id")Long id, @Param("newBody")String newBody);
-
-    /*
-    @Query(value =
-            "Select p.*  from posts_table p " +
-            " inner join user_table u on p.user_id = u.id " +
-            "where u.username =:username " +
-            "order by p.time_posted desc",
-            countQuery =
-                    "Select count(*) " +
-                    "from posts_table p inner join user_table u on p.user_id = u.id " +
-                    " where u.username = :username ",
-            nativeQuery = true)
-    Page<Post> getUserPosts(@Param("username")String username, Pageable pageable);*/
-
 
     Page<Post> findByUser_UsernameOrderByTimePostedDesc(String username, Pageable page);
 

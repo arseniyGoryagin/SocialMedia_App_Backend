@@ -12,14 +12,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
-
     Page<Comment> findByPost_Id(Long postId, Pageable pageable);
-
     Long countByPost_Id(Long postId);
-
-    @Modifying
-    @Transactional
-    @Query(value = "Update comments_table set edited = true  body = :newBody where id = :comId", nativeQuery = true)
-    void  editComment(@Param("comId") Long id, @Param("newBody") String newBody);
-
 }
