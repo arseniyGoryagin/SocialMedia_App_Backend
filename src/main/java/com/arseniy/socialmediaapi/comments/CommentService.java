@@ -92,7 +92,10 @@ public class CommentService {
 
 
     public void editComment(Long comId, String newBody){
-        commentRepository.editComment(comId, newBody);
+        Comment comment = commentRepository.findById(comId).orElseThrow(() -> new RuntimeException());
+        // TODO add correct error
+        comment.setBody(newBody);
+        commentRepository.save(comment);
     }
 
 
