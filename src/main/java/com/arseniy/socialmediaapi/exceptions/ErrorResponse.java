@@ -1,12 +1,11 @@
-package com.arseniy.socialmediaapi.auth.domain.dto;
+package com.arseniy.socialmediaapi.exceptions;
 
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class ErrorResponse {
-
     private  String message;
-
-
 }

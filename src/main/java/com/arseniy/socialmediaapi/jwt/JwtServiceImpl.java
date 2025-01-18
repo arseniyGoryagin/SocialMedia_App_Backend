@@ -1,7 +1,6 @@
 package com.arseniy.socialmediaapi.jwt;
 
 
-import com.arseniy.socialmediaapi.jwt.domain.JwtService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;

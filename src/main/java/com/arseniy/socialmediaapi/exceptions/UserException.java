@@ -1,4 +1,4 @@
-package com.arseniy.socialmediaapi.auth.domain.exceptions;
+package com.arseniy.socialmediaapi.exceptions;
 
 public class UserException extends Exception{
 
