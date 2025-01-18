@@ -33,7 +33,6 @@ public class AuthorizationService {
     }
 
 
-
     public String register(String username,  String password, String email, String name) throws EmailAlreadyInUseException, UsernameAlreadyInUseException {
 
         // Validate if user have is already registered
