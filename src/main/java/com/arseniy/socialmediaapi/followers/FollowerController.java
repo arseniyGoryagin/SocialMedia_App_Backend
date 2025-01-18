@@ -9,7 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,36 +19,19 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/follows")
 public class FollowerController {
 
-
     private final FollowerService followerService;
 
-
-
     @PostMapping()
-    public ResponseEntity<MessageResponse> followUser(@RequestBody FollowRequest request) throws NoSuchException {
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        User user = (User) authentication.getPrincipal();
-
-        followerService.followUser(request.getUsername(), user.getUsername());
-
+    public ResponseEntity<MessageResponse> followUser(@AuthenticationPrincipal UserDetails userDetails,@RequestBody FollowRequest request) throws NoSuchException {
+        followerService.followUser(request.getUsername(), userDetails.getUsername());
         return new ResponseEntity<>(new MessageResponse("User followed"), HttpStatus.OK);
     }
 
 
     @DeleteMapping("/{username}")
-    public ResponseEntity<MessageResponse> unFollowUser(@PathVariable("username") String username) throws NoSuchException {
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        User user = (User) authentication.getPrincipal();
-
-        followerService.unFollowUser(username, user.getUsername());
-
+    public ResponseEntity<MessageResponse> unFollowUser(@AuthenticationPrincipal UserDetails userDetails, @PathVariable("username") String username) throws NoSuchException {
+        followerService.unFollowUser(username, userDetails.getUsername());
         return new ResponseEntity<>(new MessageResponse("User unfollowed"), HttpStatus.OK);
     }
-
-
 
 }

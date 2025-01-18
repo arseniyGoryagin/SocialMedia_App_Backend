@@ -11,7 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,27 +27,16 @@ public class LikeController {
 
 
     @PostMapping()
-    public ResponseEntity<MessageResponse>  likePost(@RequestBody LikeRequest request) throws EmailAlreadyInUseException, NoSuchException {
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) authentication.getPrincipal();
-
-        likeService.likePost(user.getUsername(), request.getPostId());
-
+    public ResponseEntity<MessageResponse>  likePost(@AuthenticationPrincipal UserDetails userDetails, @RequestBody LikeRequest request) throws EmailAlreadyInUseException, NoSuchException {
+        likeService.likePost(userDetails.getUsername(), request.getPostId());
         return new ResponseEntity<>(new MessageResponse("Post liked"), HttpStatus.OK);
         
     }
 
     @DeleteMapping("/{postId}")
-    public ResponseEntity<MessageResponse>  unlikePost(@PathVariable("postId") Long postId){
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) authentication.getPrincipal();
-
-        likeService.unlikePost(user.getUsername(), postId);
-
+    public ResponseEntity<MessageResponse>  unlikePost(@AuthenticationPrincipal UserDetails userDetails, @PathVariable("postId") Long postId){
+        likeService.unlikePost(userDetails.getUsername(), postId);
         return new ResponseEntity<>(new MessageResponse("Post unliked"), HttpStatus.OK);
-
     }
 
 }
