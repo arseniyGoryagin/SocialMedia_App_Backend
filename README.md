@@ -1,6 +1,6 @@
-# Social Media API application
+# Business accounting app API
 
-This is a fully fledge social media API built with Java Spring, includes post,likes comments etc..
+This is an Api for a Business accounting app that supports adding and removing clients and keeping track of orders
 
 ## Table of Contents
 
@@ -8,14 +8,11 @@ This is a fully fledge social media API built with Java Spring, includes post,li
 - [Technologies Used](#technologies-used)
 - [Installation](#installation)
 
-
 ## Features
-- Posts
-- Likes
-- Follows
-- Commnets
-- Swagger available
-- Feed (in progress)
+
+- Clients
+- Orders
+- Admin and regular users (in progress)
 
 
 ## Technologies Used
@@ -24,7 +21,7 @@ This is a fully fledge social media API built with Java Spring, includes post,li
 - ![Spring](https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white) 
 - ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white) 
 - ![Docker](https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white) 
-
+- ![Kafka](https://img.shields.io/badge/Apache%20Kafka-231F20?style=for-the-badge&logo=apachekafka&logoColor=white) 
 ## Installation
 
 Follow these steps to get the project up and running on your local machine.
@@ -39,13 +36,11 @@ Follow these steps to get the project up and running on your local machine.
 
 1. Clone the repository:
    ```sh
-   git clone https://github.com/arseniyGoryagin/social-media-api
+   git clone https://github.com/arseniyGoryagin/business-accounting-app.git
    cd my-spring-project
 2. Run docker-compose
      ```sh
     docker-compose up -d --build
+3. You need to enter the postgres docker container and create a User that can login to the app
+     
 
-
-
-### API Documentation
-Once the application is up and running you can find the swagger docs at: http://localhost:8080/swagger-ui/index.html
