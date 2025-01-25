@@ -49,31 +49,6 @@ public class User implements UserDetails {
     private Role role;
 
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-    @JsonIgnore
-    private List<Update> updates = new ArrayList<>();
-
-    @OneToMany(mappedBy = "follower", cascade = CascadeType.REMOVE)
-    @JsonIgnore
-    private List<Follow> followers = new ArrayList<>();
-
-    @OneToMany(mappedBy = "target", cascade = CascadeType.REMOVE)
-    @JsonIgnore
-    private List<Follow> target = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-    @JsonIgnore
-    private List<Comment> comments = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-    @JsonIgnore
-    private List<Post> posts = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-    @JsonIgnore
-    private List<Like> likes = new ArrayList<>();
-
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));

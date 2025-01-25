@@ -10,6 +10,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UpdateRepository extends JpaRepository<Update, Long> {
 
-    Page<Update> findByUser_UsernameOrderByDateDesc(String username, Pageable pageable);
+    Page<Update> findByUserUsernameOrderByDateDesc(String username, Pageable pageable);
 
 }

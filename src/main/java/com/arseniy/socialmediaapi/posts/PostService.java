@@ -40,9 +40,9 @@ public class PostService {
 
         return PostResponse.builder()
                 .id(post.getId())
-                .likes(likeRepository.countByPost_Id(post.getId()))
-                .comments(commentRepository.countByPost_Id(post.getId()))
-                .liked(likeRepository.existsByUser_UsernameAndPost_Id(currentUserUsername, post.getId()))
+                .likes(likeRepository.countByPostId(post.getId()))
+                .comments(commentRepository.countByPostId(post.getId()))
+                .liked(likeRepository.existsByUserUsernameAndPostId(currentUserUsername, post.getId()))
                 .body(post.getBody())
                 .edited(post.getEdited())
                 .username(user.getUsername())
@@ -106,10 +106,10 @@ public class PostService {
     }
 
     public Page<PostResponse> getAllUserPosts(String username, String currentUserUsername, Pageable pageable){
-        return postRepository.findByUser_UsernameOrderByTimePostedDesc(username, pageable).map(post -> toPostResponseFromPost(post, currentUserUsername));
+        return postRepository.findByUserUsernameOrderByTimePostedDesc(username, pageable).map(post -> toPostResponseFromPost(post, currentUserUsername));
     }
 
     public Page<PostResponse> getUserLikes(String currentUserUsername, Pageable pageable) {
-        return postRepository.findByUser_UsernameOrderByTimePostedDesc(currentUserUsername, pageable).map(post -> toPostResponseFromPost(post, currentUserUsername));
+        return postRepository.findByUserUsernameOrderByTimePostedDesc(currentUserUsername, pageable).map(post -> toPostResponseFromPost(post, currentUserUsername));
     }
 }

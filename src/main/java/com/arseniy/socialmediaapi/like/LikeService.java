@@ -37,7 +37,7 @@ public class LikeService {
 
 
     public void unlikePost(String username, Long postId){
-        Like like = likeRepository.findByUser_UsernameAndPost_Id(username, postId).orElseThrow( () -> new PostNotLikedByUser("This post is not liked by user"));
+        Like like = likeRepository.findByUserUsernameAndPostId(username, postId).orElseThrow( () -> new PostNotLikedByUser("This post is not liked by user"));
         likeRepository.delete(like);
     }
 

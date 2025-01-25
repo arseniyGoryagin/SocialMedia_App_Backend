@@ -36,10 +36,11 @@ public class UpdateService {
     }
 
     public Page<UpdateResponse> getUserUpdatesUpdates(String username, Pageable pageable){
-        return updateRepository.findByUser_UsernameOrderByDateDesc(username, pageable).map(this::toUpdateResponseFromUpdate);
+        return updateRepository.findByUserUsernameOrderByDateDesc(username, pageable).map(this::toUpdateResponseFromUpdate);
     }
 
 
+    //TODO
     /*
     public void makeUpdate(String forUsername, String fromUser,String message, Update.Type type) throws NoSuchException {
 

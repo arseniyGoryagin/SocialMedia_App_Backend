@@ -1,6 +1,8 @@
 package com.arseniy.socialmediaapi.config;
 
 
+import com.arseniy.socialmediaapi.jwt.JwtService;
+import com.arseniy.socialmediaapi.jwt.JwtServiceImpl;
 import com.arseniy.socialmediaapi.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -60,6 +62,7 @@ public class SecurityConfiguration {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
 
     @Bean
     public AuthenticationProvider authenticationProvider() {

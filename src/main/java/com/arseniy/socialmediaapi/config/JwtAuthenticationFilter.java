@@ -2,6 +2,7 @@ package com.arseniy.socialmediaapi.config;
 
 
 import com.arseniy.socialmediaapi.jwt.JwtService;
+import com.arseniy.socialmediaapi.jwt.JwtServiceImpl;
 import com.arseniy.socialmediaapi.jwt.TokenType;
 import com.arseniy.socialmediaapi.user.UserService;
 import jakarta.servlet.FilterChain;

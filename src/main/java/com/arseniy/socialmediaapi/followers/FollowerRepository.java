@@ -10,13 +10,13 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface FollowerRepository extends JpaRepository<Follow, Long> {
 
-    public Page<User> findTargetByFollower_Username(String username, Pageable page);
-    public Page<User> findFollowerByTarget_Username(String username, Pageable page);
-    public Boolean existsByTarget_UsernameAndFollower_Username(String target, String follower );
+    public Page<User> findTargetByFollowerUsername(String username, Pageable page);
+    public Page<User> findFollowerByTargetUsername(String username, Pageable page);
+    public Boolean existsByTargetUsernameAndFollowerUsername(String target, String follower );
 
-    public Long countByTarget_Username(String username);
-    public Long countByFollower_Username(String username);
+    public Long countByTargetUsername(String username);
+    public Long countByFollowerUsername(String username);
 
-    void deleteByFollower_IdAndTarget_Id(Long followerId, Long targetId);
+    void deleteByFollowerIdAndTargetId(Long followerId, Long targetId);
 
 }
