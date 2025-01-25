@@ -4,6 +4,7 @@ package com.arseniy.socialmediaapi.auth;
 import com.arseniy.socialmediaapi.exceptions.EmailAlreadyInUseException;
 import com.arseniy.socialmediaapi.exceptions.UsernameAlreadyInUseException;
 import com.arseniy.socialmediaapi.jwt.JwtService;
+import com.arseniy.socialmediaapi.jwt.TokenType;
 import com.arseniy.socialmediaapi.user.domain.User;
 import com.arseniy.socialmediaapi.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,7 @@ public class AuthorizationService {
 
     public String login(String username, String password){
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-        return jwtService.generateToken(username);
+        return jwtService.generateToken(username, TokenType.ACCESS);
     }
 
 
@@ -64,13 +65,9 @@ public class AuthorizationService {
 
         // Generate token
 
-        return jwtService.generateToken(newUser.getUsername());
-
-
+        return jwtService.generateToken(newUser.getUsername(), TokenType.ACCESS);
 
     }
-
-
 
 
 }

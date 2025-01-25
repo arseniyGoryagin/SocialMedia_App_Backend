@@ -2,10 +2,33 @@ package com.arseniy.socialmediaapi.jwt;
 
 public interface JwtService {
 
-    String generateToken(String username);
 
-    void validateToken(String token);
+    /**
+     *
+     * Извлечение email из токена
+     *
+     * @param token  токен
+     * @return email
+     */
+    public String getUsername(String token, TokenType tokenType);
 
-    String getUsernameFromToken(String token);
+
+    /**
+     *
+     * Генерация токена
+     *
+     * @param email email пользователя
+     * @return token
+     */
+    public String generateToken(String email, TokenType tokenType);
+
+    /**
+     *
+     * валидация токена
+     *
+     * @return true если токен валиден
+     */
+    public boolean validateToken(String token, TokenType tokenType);
+
 
 }
