@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -56,23 +57,14 @@ public class PostService {
     }
 
 
+
     public Page<PostResponse> getPosts(String currentUserUsername, Pageable pageable){
-       return postRepository.getPosts(pageable).map(post -> toPostResponseFromPost(post, currentUserUsername));
+       return postRepository.findAll(pageable).map(post -> toPostResponseFromPost(post, currentUserUsername));
     }
 
     public Page<PostResponse> getFeed(String currentUserUsername, Pageable pageable){
-        return postRepository.getPosts(pageable).map(post -> toPostResponseFromPost(post, currentUserUsername));
+        return postRepository.findAll(pageable).map(post -> toPostResponseFromPost(post, currentUserUsername));
     }
-
-    /*
-    public Optional<PostResponse> getPost(String currentUserUsername, Long id){
-        return postRepository.findById(id).map(post -> toPostResponseFromPost(post, currentUserUsername));
-
-        2024-11-11T14:04:25.784Z ERROR 1547 --- [socialmedia] [nio-8080-exec-3] c.a.s.exceptions.GlobalExceptionHandler  : No EntityManager with actual transaction available for current thread - cannot reliably process 'remove' call
-
-
-
-    }*/
 
 
     public PostResponse addPost(String body, User user) throws EmailAlreadyInUseException {
@@ -107,17 +99,17 @@ public class PostService {
 
     public void editPost(String currentUserUsername, Long postId, String newBody) throws  NotAllowedException, NoSuchException {
 
-        Optional<Post> post = postRepository.findById(postId);
+        Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException());
+        //TODO add proper errors
 
-        if(post.isEmpty()){
-            throw new NoSuchException("No such post exception");
-        }
-
-        if (!Objects.equals(post.get().getUser().getUsername(), currentUserUsername)){
+        if (!Objects.equals(post.getUser().getUsername(), currentUserUsername)){
             throw new NotAllowedException("This is not the users post");
         }
 
-        postRepository.editPost(postId, newBody);
+        post.setBody(newBody);
+        post.setEdited(true);
+
+        postRepository.save(post);
     }
 
     public Page<PostResponse> getAllUserPosts(String username, String currentUserUsername, Pageable pageable){
