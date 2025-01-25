@@ -4,7 +4,6 @@ package com.arseniy.socialmediaapi.posts;
 import com.arseniy.socialmediaapi.exceptions.EmailAlreadyInUseException;
 import com.arseniy.socialmediaapi.exceptions.NoSuchException;
 import com.arseniy.socialmediaapi.exceptions.NotAllowedException;
-import com.arseniy.socialmediaapi.posts.domain.EditPostRequest;
 import com.arseniy.socialmediaapi.posts.domain.PostRequest;
 import com.arseniy.socialmediaapi.posts.domain.PostResponse;
 import com.arseniy.socialmediaapi.util.responses.MessageResponse;
@@ -34,8 +33,6 @@ public class PostController {
 
     private final PostService postService;
 
-
-
     @Operation(summary = "Like post")
     @ApiResponse(responseCode = "200", description = "Post liked", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MessageResponse.class)))
     @GetMapping("/user/{username}")
@@ -62,8 +59,8 @@ public class PostController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<MessageResponse> editPost(@AuthenticationPrincipal UserDetails userDetails, @PathVariable("id") Long postId, @RequestBody EditPostRequest request) throws  NotAllowedException, NoSuchException {
-        postService.editPost( userDetails.getUsername(),postId, request.getNewBody());
+    public ResponseEntity<MessageResponse> editPost(@AuthenticationPrincipal UserDetails userDetails, @PathVariable("id") Long postId, @RequestBody PostRequest request) throws  NotAllowedException, NoSuchException {
+        postService.editPost( userDetails.getUsername(),postId, request.getBody());
         return new ResponseEntity<>(new MessageResponse("Post edited"), HttpStatus.OK);
     }
 
