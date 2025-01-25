@@ -43,7 +43,7 @@ public class CommentService {
 
 
     public Page<CommentResponse> getPostsComments(Long postId, String currentUser, Pageable pageable){
-       return commentRepository.findByPost_Id(postId, pageable).map(comment -> toCommentResponse(comment, currentUser));
+       return commentRepository.findByPostId(postId, pageable).map(comment -> toCommentResponse(comment, currentUser));
     }
 
 

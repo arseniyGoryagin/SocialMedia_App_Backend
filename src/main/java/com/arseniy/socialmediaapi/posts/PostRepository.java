@@ -33,8 +33,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             nativeQuery = true)
     Page<Post> getFeed(@Param("username") String username, Pageable pageable);
 
-    Page<Post> findByUser_UsernameOrderByTimePostedDesc(String username, Pageable page);
-
-    Page<Post> findByLikes_User_Username(String username, Pageable pageable);
+    Page<Post> findByUserUsernameOrderByTimePostedDesc(String username, Pageable page);
 
 }

@@ -33,8 +33,4 @@ public class Post {
     private LocalDateTime timePosted;
 
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<Like> likes;
-
 }

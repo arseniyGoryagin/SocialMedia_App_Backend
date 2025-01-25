@@ -25,7 +25,7 @@ public class FollowerService {
         User follower = userRepository.findByUsername(followerUsername).orElseThrow(() -> new NoSuchUserException("No such user"));
 
 
-        if(followerRepository.existsByTarget_UsernameAndFollower_Username(targetUsername, followerUsername)){
+        if(followerRepository.existsByTargetUsernameAndFollowerUsername(targetUsername, followerUsername)){
             throw new FollowAlreadyExistsException("The user is already following this user");
         }
 
@@ -44,10 +44,10 @@ public class FollowerService {
         User target = userRepository.findByUsername(targetUsername).orElseThrow(() -> new NoSuchUserException("No such user " + targetUsername));
         User follower = userRepository.findByUsername(followerUsername).orElseThrow(() -> new NoSuchUserException("No such user"));
 
-        if(!followerRepository.existsByTarget_UsernameAndFollower_Username(targetUsername, followerUsername)){
+        if(!followerRepository.existsByTargetUsernameAndFollowerUsername(targetUsername, followerUsername)){
             throw new FollowDoesNotExist("The user is not following");
         }
 
-        followerRepository.deleteByFollower_IdAndTarget_Id(follower.getId(), target.getId());
+        followerRepository.deleteByFollowerIdAndTargetId(follower.getId(), target.getId());
     }
 }

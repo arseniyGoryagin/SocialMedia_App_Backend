@@ -31,10 +31,10 @@ public class UserService {
                         .name(u.getName())
                         .profilePicture(u.getProfilePicture())
                         .description(u.getDescription())
-                        .followsCount(followerRepository.countByFollower_Username(u.getUsername()))
-                        .followerCount(followerRepository.countByTarget_Username(u.getUsername()))
+                        .followsCount(followerRepository.countByFollowerUsername(u.getUsername()))
+                        .followerCount(followerRepository.countByTargetUsername(u.getUsername()))
                         .username(u.getUsername())
-                        .isFollowing(followerRepository.existsByTarget_UsernameAndFollower_Username(u.getUsername(), currentUserUsername))
+                        .isFollowing(followerRepository.existsByTargetUsernameAndFollowerUsername(u.getUsername(), currentUserUsername))
                         .isOwn(Objects.equals(u.getUsername(), currentUserUsername))
                         .build();
         }
@@ -62,12 +62,12 @@ public class UserService {
 
         public Page<UserResponse> getUserFollowers(String username, String currentUserUsername, Pageable pageable){
                 findByUsername(username).orElseThrow(() -> new NoSuchUserException("User does not exist"));
-                return followerRepository.findFollowerByTarget_Username(username, pageable).map( u -> userToUserResponse(u, currentUserUsername));
+                return followerRepository.findFollowerByTargetUsername(username, pageable).map( u -> userToUserResponse(u, currentUserUsername));
         }
 
         public Page<UserResponse> getUserFollows(String username, String currentUserUsername, Pageable pageable) {
                 findByUsername(username).orElseThrow(() -> new NoSuchUserException("User does not exist"));
-                return followerRepository.findTargetByFollower_Username(username, pageable).map( u -> userToUserResponse(u, currentUserUsername));
+                return followerRepository.findTargetByFollowerUsername(username, pageable).map( u -> userToUserResponse(u, currentUserUsername));
         }
 
 }
