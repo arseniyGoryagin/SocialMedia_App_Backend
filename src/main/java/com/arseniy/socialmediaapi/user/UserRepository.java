@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository  extends JpaRepository<User, Long> {
@@ -14,5 +15,5 @@ public interface UserRepository  extends JpaRepository<User, Long> {
     boolean existsByUsername(String username);
     boolean existsByEmail(String username);
     Page<User> findByUsernameStartingWith(String username, Pageable page);
-
+    List<Long> findLikedPostIdsByUsername(String username);
 }

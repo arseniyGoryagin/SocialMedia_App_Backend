@@ -33,7 +33,7 @@ public class PostController {
 
     private final PostService postService;
 
-    @Operation(summary = "Like post")
+    @Operation(summary = "Get users posts")
     @ApiResponse(responseCode = "200", description = "Post liked", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MessageResponse.class)))
     @GetMapping("/user/{username}")
     public ResponseEntity<Page<PostResponse>> getUserPosts(@AuthenticationPrincipal UserDetails userDetails,@PathVariable("username") String username, @RequestParam("page") int page, @RequestParam("size") int size) {
@@ -48,14 +48,12 @@ public class PostController {
         return new ResponseEntity<>(postService.getPosts(userDetails.getUsername(),pageable), HttpStatus.OK);
 
     }
-
   
    @PostMapping()
     public ResponseEntity<MessageResponse> addPost(@AuthenticationPrincipal UserDetails userDetails,@RequestBody PostRequest request) {
         postService.addPost( request.getBody(), (User) userDetails);
         return new ResponseEntity<>(new MessageResponse("Post added"), HttpStatus.OK);
     }
-
 
 
     @PutMapping("/{id}")
@@ -73,8 +71,7 @@ public class PostController {
 
     @GetMapping("/likes/{username}")
     public ResponseEntity<Page<PostResponse>> getUserLikes(@AuthenticationPrincipal UserDetails userDetails, @PathVariable("username") String username, @RequestParam("page") int page, @RequestParam("size") int size){
-        Pageable pageable = PageRequest.of(page, size);
-        Page<PostResponse> likes = postService.getUserLikes(userDetails.getUsername(),pageable);
+        Page<PostResponse> likes = postService.getUserLikes(userDetails.getUsername(),PageRequest.of(page, size));
         return new ResponseEntity<>(likes, HttpStatus.OK);
     }
 

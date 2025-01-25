@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -68,6 +69,11 @@ public class UserService {
         public Page<UserResponse> getUserFollows(String username, String currentUserUsername, Pageable pageable) {
                 findByUsername(username).orElseThrow(() -> new NoSuchUserException("User does not exist"));
                 return followerRepository.findTargetByFollowerUsername(username, pageable).map( u -> userToUserResponse(u, currentUserUsername));
+        }
+
+
+        public List<Long> getLikedPostsIds(String username){
+                return userRepository.findLikedPostIdsByUsername(username);
         }
 
 }
