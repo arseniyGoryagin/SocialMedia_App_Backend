@@ -1,7 +1,6 @@
 package com.arseniy.socialmediaapi.updates;
 
 
-import com.arseniy.socialmediaapi.exceptions.NoSuchException;
 import com.arseniy.socialmediaapi.updates.domain.UpdateResponse;
 import com.arseniy.socialmediaapi.updates.domain.Update;
 import com.arseniy.socialmediaapi.user.domain.User;
@@ -40,6 +39,8 @@ public class UpdateService {
         return updateRepository.findByUser_UsernameOrderByDateDesc(username, pageable).map(this::toUpdateResponseFromUpdate);
     }
 
+
+    /*
     public void makeUpdate(String forUsername, String fromUser,String message, Update.Type type) throws NoSuchException {
 
         User user = userRepository.findByUsername(forUsername).orElseThrow(() -> new NoSuchException("No such user"));
@@ -55,7 +56,7 @@ public class UpdateService {
 
 
         updateRepository.save(update);
-    }
+    }*/
 
 
 

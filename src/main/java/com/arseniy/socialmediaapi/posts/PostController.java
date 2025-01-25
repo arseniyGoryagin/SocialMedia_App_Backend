@@ -1,11 +1,12 @@
 package com.arseniy.socialmediaapi.posts;
 
 
-import com.arseniy.socialmediaapi.exceptions.EmailAlreadyInUseException;
-import com.arseniy.socialmediaapi.exceptions.NoSuchException;
-import com.arseniy.socialmediaapi.exceptions.NotAllowedException;
+import com.arseniy.socialmediaapi.auth.exceptions.UsernameAlreadyInUseException;
+import com.arseniy.socialmediaapi.exceptions.ErrorResponse;
+import com.arseniy.socialmediaapi.exceptions.UserNotAllowedOperationException;
 import com.arseniy.socialmediaapi.posts.domain.PostRequest;
 import com.arseniy.socialmediaapi.posts.domain.PostResponse;
+import com.arseniy.socialmediaapi.posts.exceptions.NoSuchPostException;
 import com.arseniy.socialmediaapi.util.responses.MessageResponse;
 import com.arseniy.socialmediaapi.user.domain.User;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,7 +15,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -51,7 +51,7 @@ public class PostController {
 
   
    @PostMapping()
-    public ResponseEntity<MessageResponse> addPost(@AuthenticationPrincipal UserDetails userDetails,@RequestBody PostRequest request) throws EmailAlreadyInUseException {
+    public ResponseEntity<MessageResponse> addPost(@AuthenticationPrincipal UserDetails userDetails,@RequestBody PostRequest request) {
         postService.addPost( request.getBody(), (User) userDetails);
         return new ResponseEntity<>(new MessageResponse("Post added"), HttpStatus.OK);
     }
@@ -59,13 +59,13 @@ public class PostController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<MessageResponse> editPost(@AuthenticationPrincipal UserDetails userDetails, @PathVariable("id") Long postId, @RequestBody PostRequest request) throws  NotAllowedException, NoSuchException {
+    public ResponseEntity<MessageResponse> editPost(@AuthenticationPrincipal UserDetails userDetails, @PathVariable("id") Long postId, @RequestBody PostRequest request)  {
         postService.editPost( userDetails.getUsername(),postId, request.getBody());
         return new ResponseEntity<>(new MessageResponse("Post edited"), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<MessageResponse> deletePost(@AuthenticationPrincipal UserDetails userDetails, @PathVariable("id") Long postId) throws NotAllowedException, NoSuchException {
+    public ResponseEntity<MessageResponse> deletePost(@AuthenticationPrincipal UserDetails userDetails, @PathVariable("id") Long postId)  {
         postService.deletePost(userDetails.getUsername(),  postId);
         return new ResponseEntity<>(new MessageResponse("Post deleted"), HttpStatus.OK);
     }
@@ -79,7 +79,15 @@ public class PostController {
     }
 
 
+    @ExceptionHandler(NoSuchPostException.class)
+    public ResponseEntity<ErrorResponse> handleNoSuchPostException(NoSuchPostException e){
+        return new ResponseEntity<>(new ErrorResponse( e.getMessage()), HttpStatus.NOT_FOUND);
+    }
 
+    @ExceptionHandler(UsernameAlreadyInUseException.class)
+    public ResponseEntity<ErrorResponse> handleUserNotAllowedOperation(UserNotAllowedOperationException e){
+        return new ResponseEntity<>(new ErrorResponse( e.getMessage()), HttpStatus.UNAUTHORIZED);
+    }
 
 
 }

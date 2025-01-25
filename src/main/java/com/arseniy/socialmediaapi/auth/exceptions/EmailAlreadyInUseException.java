@@ -1,4 +1,4 @@
-package com.arseniy.socialmediaapi.exceptions;
+package com.arseniy.socialmediaapi.auth.exceptions;
 
 public class EmailAlreadyInUseException extends Exception{
     public EmailAlreadyInUseException() {
