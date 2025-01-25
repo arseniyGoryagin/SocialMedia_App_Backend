@@ -1,7 +1,7 @@
 package com.arseniy.socialmediaapi.jwt;
 
 
-import com.chatr.jwt.config.JwtConfig;
+import com.arseniy.socialmediaapi.jwt.config.JwtConfig;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
