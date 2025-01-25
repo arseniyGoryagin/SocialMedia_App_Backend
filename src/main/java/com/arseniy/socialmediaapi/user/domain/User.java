@@ -1,11 +1,7 @@
 package com.arseniy.socialmediaapi.user.domain;
 
 
-import com.arseniy.socialmediaapi.comments.Comment;
-import com.arseniy.socialmediaapi.followers.domain.Follow;
-import com.arseniy.socialmediaapi.like.domain.Like;
 import com.arseniy.socialmediaapi.posts.domain.Post;
-import com.arseniy.socialmediaapi.updates.domain.Update;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -16,9 +12,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Data
@@ -48,6 +42,9 @@ public class User implements UserDetails {
     private String email;
     private Role role;
 
+    @ManyToMany()
+    @JsonIgnore
+    private Set<Post> likes = new HashSet<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

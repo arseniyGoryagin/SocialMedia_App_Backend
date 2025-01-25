@@ -1,14 +1,14 @@
 package com.arseniy.socialmediaapi.posts.domain;
 
 
-import com.arseniy.socialmediaapi.like.domain.Like;
 import com.arseniy.socialmediaapi.user.domain.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Data
@@ -32,5 +32,8 @@ public class Post {
 
     private LocalDateTime timePosted;
 
+    @ManyToMany(mappedBy = "likes")
+    @JsonIgnore
+    private Set<User> liked = new HashSet<>();
 
 }

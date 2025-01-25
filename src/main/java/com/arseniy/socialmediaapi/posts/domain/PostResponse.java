@@ -19,7 +19,7 @@ public class PostResponse {
 
     private String body;
 
-    private Long likes;
+    private int likes;
     private Boolean liked;
 
     private Boolean isOwn;
