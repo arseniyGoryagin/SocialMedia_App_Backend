@@ -2,6 +2,7 @@ package com.arseniy.socialmediaapi.config;
 
 
 import com.arseniy.socialmediaapi.jwt.JwtService;
+import com.arseniy.socialmediaapi.jwt.TokenType;
 import com.arseniy.socialmediaapi.user.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -50,7 +51,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // Обрезаем префикс и получаем имя пользователя из токена
         var token  = authHeader.substring(BEARER_PREFIX.length());
-        var username = jwtService.getUsernameFromToken(token);
+        var username = jwtService.getUsername(token, TokenType.ACCESS);
 
         if (StringUtils.isNotEmpty(username) && SecurityContextHolder.getContext().getAuthentication() == null) {
 
@@ -64,7 +65,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         .loadUserByUsername(username);
 
 
-                jwtService.validateToken(token);
+                jwtService.validateToken(token, TokenType.ACCESS);
 
                 SecurityContext context = SecurityContextHolder.createEmptyContext();
 
