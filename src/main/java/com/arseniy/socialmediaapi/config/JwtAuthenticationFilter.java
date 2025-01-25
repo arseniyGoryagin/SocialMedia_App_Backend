@@ -9,7 +9,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,14 +18,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 import java.io.IOException;
-
-
 
 @Component
 @RequiredArgsConstructor
-@Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     public static final String BEARER_PREFIX = "Bearer ";
@@ -55,9 +50,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (StringUtils.isNotEmpty(username) && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-
-            log.info("Username!!!! " + username);
-
             try {
 
                 UserDetails userDetails = userService
@@ -79,11 +71,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 context.setAuthentication(authToken);
                 SecurityContextHolder.setContext(context);
 
-                log.info("No error context set");
-
             }
             catch (Exception e){
-                log.error(e.getLocalizedMessage());
                 response.getWriter().println(e.getLocalizedMessage());
             }
 

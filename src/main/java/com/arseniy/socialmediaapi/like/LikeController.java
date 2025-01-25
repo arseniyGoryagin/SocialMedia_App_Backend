@@ -1,29 +1,26 @@
 package com.arseniy.socialmediaapi.like;
 
 
-import com.arseniy.socialmediaapi.exceptions.EmailAlreadyInUseException;
-import com.arseniy.socialmediaapi.exceptions.NoSuchException;
+
+import com.arseniy.socialmediaapi.exceptions.ErrorResponse;
 import com.arseniy.socialmediaapi.like.domain.LikeRequest;
+import com.arseniy.socialmediaapi.like.exceptions.PostNotLikedByUser;
+import com.arseniy.socialmediaapi.posts.exceptions.NoSuchPostException;
+import com.arseniy.socialmediaapi.user.exceptions.NoSuchUserException;
 import com.arseniy.socialmediaapi.util.responses.MessageResponse;
-import com.arseniy.socialmediaapi.user.domain.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@Slf4j
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/likes")
 @Tag(name= "Likes")
@@ -34,12 +31,11 @@ public class LikeController {
     @Operation(summary = "Like post")
     @ApiResponse(responseCode = "200", description = "Post liked", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MessageResponse.class)))
     @PostMapping()
-    public ResponseEntity<MessageResponse>  likePost(@AuthenticationPrincipal UserDetails userDetails, @RequestBody LikeRequest request) throws EmailAlreadyInUseException, NoSuchException {
+    public ResponseEntity<MessageResponse>  likePost(@AuthenticationPrincipal UserDetails userDetails, @RequestBody LikeRequest request) {
         likeService.likePost(userDetails.getUsername(), request.getPostId());
         return new ResponseEntity<>(new MessageResponse("Post liked"), HttpStatus.OK);
         
     }
-
 
     @Operation(summary = "Unlike post")
     @ApiResponse(responseCode = "200", description = "Post unliked", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MessageResponse.class)))
@@ -48,5 +44,21 @@ public class LikeController {
         likeService.unlikePost(userDetails.getUsername(), postId);
         return new ResponseEntity<>(new MessageResponse("Post unliked"), HttpStatus.OK);
     }
+
+    @ExceptionHandler(PostNotLikedByUser.class)
+    public ResponseEntity<ErrorResponse> handlePostNotLikedByUserException(PostNotLikedByUser e){
+        return new ResponseEntity<>(new ErrorResponse( e.getMessage()), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(NoSuchPostException.class)
+    public ResponseEntity<ErrorResponse> handleNoSuchPostException(NoSuchPostException e){
+        return new ResponseEntity<>(new ErrorResponse( e.getMessage()), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(NoSuchUserException.class)
+    public ResponseEntity<ErrorResponse> handleNoSuchUserException(NoSuchUserException e){
+        return new ResponseEntity<>(new ErrorResponse( e.getMessage()), HttpStatus.NOT_FOUND);
+    }
+
 
 }

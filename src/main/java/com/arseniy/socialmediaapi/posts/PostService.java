@@ -1,14 +1,13 @@
 package com.arseniy.socialmediaapi.posts;
 
 
-import com.arseniy.socialmediaapi.exceptions.EmailAlreadyInUseException;
 import com.arseniy.socialmediaapi.comments.CommentRepository;
-import com.arseniy.socialmediaapi.exceptions.NoSuchException;
-import com.arseniy.socialmediaapi.exceptions.NotAllowedException;
+import com.arseniy.socialmediaapi.exceptions.UserNotAllowedOperationException;
 import com.arseniy.socialmediaapi.followers.FollowerRepository;
 import com.arseniy.socialmediaapi.like.LikeRepository;
 import com.arseniy.socialmediaapi.posts.domain.PostResponse;
 import com.arseniy.socialmediaapi.posts.domain.Post;
+import com.arseniy.socialmediaapi.posts.exceptions.NoSuchPostException;
 import com.arseniy.socialmediaapi.user.domain.User;
 import com.arseniy.socialmediaapi.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -67,7 +64,7 @@ public class PostService {
     }
 
 
-    public PostResponse addPost(String body, User user) throws EmailAlreadyInUseException {
+    public PostResponse addPost(String body, User user){
 
         Post post = Post
                 .builder()
@@ -82,28 +79,24 @@ public class PostService {
     }
 
 
-    public void deletePost(String currentUserUsername, Long postId) throws NotAllowedException, NoSuchException {
+    public void deletePost(String currentUserUsername, Long postId) throws NoSuchPostException, UserNotAllowedOperationException {
 
-        Optional<Post> post = postRepository.findById(postId);
+        Post post = postRepository.findById(postId).orElseThrow(() -> new NoSuchPostException("No such post"));
 
-        if(post.isEmpty()){
-            throw new NoSuchException("No such post");
-        }
 
-        if (!Objects.equals(post.get().getUser().getUsername(), currentUserUsername)){
-            throw new NotAllowedException("This is not the users post");
+        if (!post.getUser().getUsername().equals(currentUserUsername)){
+            throw new UserNotAllowedOperationException("User cannot delete someone elses post");
         }
 
         postRepository.deleteAllById(Collections.singleton(postId));
     }
 
-    public void editPost(String currentUserUsername, Long postId, String newBody) throws  NotAllowedException, NoSuchException {
+    public void editPost(String currentUserUsername, Long postId, String newBody) throws NoSuchPostException, UserNotAllowedOperationException {
 
-        Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException());
-        //TODO add proper errors
+        Post post = postRepository.findById(postId).orElseThrow(() -> new NoSuchPostException("No such post"));
 
-        if (!Objects.equals(post.getUser().getUsername(), currentUserUsername)){
-            throw new NotAllowedException("This is not the users post");
+        if (!post.getUser().getUsername().equals(currentUserUsername)){
+            throw new UserNotAllowedOperationException("User cannot edit someone elses post");
         }
 
         post.setBody(newBody);

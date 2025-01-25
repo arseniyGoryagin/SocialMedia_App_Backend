@@ -1,4 +1,4 @@
-package com.arseniy.socialmediaapi.exceptions;
+package com.arseniy.socialmediaapi.auth.exceptions;
 
 public class UsernameAlreadyInUseException extends Exception{
     public UsernameAlreadyInUseException() {

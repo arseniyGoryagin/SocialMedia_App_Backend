@@ -1,22 +1,18 @@
 package com.arseniy.socialmediaapi.like;
 
 
-import com.arseniy.socialmediaapi.exceptions.EmailAlreadyInUseException;
-import com.arseniy.socialmediaapi.exceptions.NoSuchException;
 import com.arseniy.socialmediaapi.like.domain.Like;
+import com.arseniy.socialmediaapi.like.exceptions.PostNotLikedByUser;
 import com.arseniy.socialmediaapi.posts.domain.Post;
 import com.arseniy.socialmediaapi.posts.PostRepository;
-import com.arseniy.socialmediaapi.updates.domain.Update;
-import com.arseniy.socialmediaapi.updates.UpdateService;
+import com.arseniy.socialmediaapi.posts.exceptions.NoSuchPostException;
 import com.arseniy.socialmediaapi.user.domain.User;
 import com.arseniy.socialmediaapi.user.UserRepository;
+import com.arseniy.socialmediaapi.user.exceptions.NoSuchUserException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class LikeService {
@@ -25,36 +21,23 @@ public class LikeService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
 
+    public  void  likePost(String currentUserUsername, Long postId) throws NoSuchPostException, NoSuchUserException {
 
-    private final UpdateService updateService;
-
-
-    public  void  likePost(String currentUserUsername, Long postId) throws EmailAlreadyInUseException, NoSuchException {
-
-
-        Post post = postRepository.findById(postId).orElseThrow(() -> new NoSuchException("No such user"));
-        User user = userRepository.findByUsername(currentUserUsername).orElseThrow(() -> new NoSuchException("No such user"));
-
+        Post post = postRepository.findById(postId).orElseThrow(() -> new NoSuchPostException("This post does not exist"));
+        User user = userRepository.findByUsername(currentUserUsername).orElseThrow(() -> new NoSuchUserException("No such user"));
 
         Like like = Like.builder()
                 .post(post)
                 .user(user)
                 .build();
 
-
-        log.info("Liking post");
         likeRepository.save(like);
-
-        if(!Objects.equals(post.getUser().getUsername(), currentUserUsername)) {
-            updateService.makeUpdate(post.getUser().getUsername(), currentUserUsername, currentUserUsername + " liked your post", Update.Type.Like);
-        }
 
     }
 
 
     public void unlikePost(String username, Long postId){
-        Like like = likeRepository.findByUser_UsernameAndPost_Id(username, postId);
-        log.info("Unliking post");
+        Like like = likeRepository.findByUser_UsernameAndPost_Id(username, postId).orElseThrow( () -> new PostNotLikedByUser("This post is not liked by user"));
         likeRepository.delete(like);
     }
 

@@ -1,11 +1,12 @@
 package com.arseniy.socialmediaapi.comments;
 
 
-import com.arseniy.socialmediaapi.auth.domain.TokenResponse;
 import com.arseniy.socialmediaapi.comments.domain.CommentRequest;
 import com.arseniy.socialmediaapi.comments.domain.CommentResponse;
-import com.arseniy.socialmediaapi.exceptions.NoSuchException;
-import com.arseniy.socialmediaapi.exceptions.NotAllowedException;
+import com.arseniy.socialmediaapi.comments.exceptions.NoSuchCommentException;
+import com.arseniy.socialmediaapi.exceptions.ErrorResponse;
+import com.arseniy.socialmediaapi.posts.exceptions.NoSuchPostException;
+import com.arseniy.socialmediaapi.user.exceptions.NoSuchUserException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -44,7 +45,7 @@ public class CommentController {
     @Operation(summary = "Make a comment")
     @ApiResponse(responseCode = "200", description = "Comment made", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CommentResponse.class)))
     @PostMapping()
-    public ResponseEntity<CommentResponse> addComment(@AuthenticationPrincipal UserDetails userDetails, @RequestBody CommentRequest request) throws NoSuchException {
+    public ResponseEntity<CommentResponse> addComment(@AuthenticationPrincipal UserDetails userDetails, @RequestBody CommentRequest request)  {
         CommentResponse comment = commentService.addComment(userDetails.getUsername(), request.getPostId(), request.getBody());
         return new ResponseEntity<>(comment, HttpStatus.OK);
     }
@@ -53,10 +54,28 @@ public class CommentController {
     @Operation(summary = "Delete comment")
     @ApiResponse(responseCode = "200", description = "Comment deleted", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)))
     @DeleteMapping("/{comId}")
-    public ResponseEntity<String> deleteComment(@AuthenticationPrincipal UserDetails userDetails,@PathVariable("comId") Long comId) throws NotAllowedException, NoSuchException {
+    public ResponseEntity<String> deleteComment(@AuthenticationPrincipal UserDetails userDetails,@PathVariable("comId") Long comId) {
         commentService.deleteComment(comId, userDetails.getUsername());
         return new ResponseEntity<>("Comment deleted", HttpStatus.OK);
     }
+
+
+    @ExceptionHandler(NoSuchCommentException.class)
+    public ResponseEntity<ErrorResponse> handleNoSuchCommentException(NoSuchCommentException e){
+        return new ResponseEntity<>(new ErrorResponse( e.getMessage()), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(NoSuchUserException.class)
+    public ResponseEntity<ErrorResponse> handleNoSuchUserException(NoSuchUserException e){
+        return new ResponseEntity<>(new ErrorResponse( e.getMessage()), HttpStatus.NOT_FOUND);
+    }
+
+
+    @ExceptionHandler(NoSuchPostException.class)
+    public ResponseEntity<ErrorResponse> handleNoSuchPostException(NoSuchPostException e){
+        return new ResponseEntity<>(new ErrorResponse( e.getMessage()), HttpStatus.NOT_FOUND);
+    }
+
 
 
 }

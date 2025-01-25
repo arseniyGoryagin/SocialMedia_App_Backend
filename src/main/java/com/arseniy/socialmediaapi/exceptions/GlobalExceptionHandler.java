@@ -25,50 +25,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(new ErrorResponse(e.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(NoSuchException.class)
-    public ResponseEntity<ErrorResponse> handleNoSuchException(NoSuchException e){
-        log.error(e.getLocalizedMessage());
-        return new ResponseEntity<>(new ErrorResponse(e.getLocalizedMessage()), HttpStatus.NOT_FOUND);
-    }
 
-    @ExceptionHandler(NotAllowedException.class)
-    public ResponseEntity<ErrorResponse> handleNotAllowedException (NotAllowedException e){
-        log.error(e.getLocalizedMessage());
-        return new ResponseEntity<>(new ErrorResponse(e.getLocalizedMessage()), HttpStatus.FORBIDDEN);
-    }
-
-
-
-
-    @ExceptionHandler(EmailAlreadyInUseException.class)
-    public ResponseEntity<Map<String, String>> handleEmailException(EmailAlreadyInUseException e){
-
-        log.error(e.getMessage());
-
-        Map<String, String> error = new HashMap<>();
-
-        error.put("email", "Email is already in use");
-
-        return new ResponseEntity<>(error, HttpStatus.NOT_ACCEPTABLE);
-
-    }
-
-    @ExceptionHandler(UsernameAlreadyInUseException.class)
-    public ResponseEntity<Map<String, String>> handleUsernameException(UsernameAlreadyInUseException e){
-
-        log.error(e.getMessage());
-
-        Map<String, String> error = new HashMap<>();
-
-        error.put("username", "Username is already in use");
-
-        return new ResponseEntity<>(error, HttpStatus.NOT_ACCEPTABLE);
-    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationException(MethodArgumentNotValidException e){
 
-        log.error(e.getMessage());
 
         Map<String, String> errors = new HashMap<>();
 

@@ -1,8 +1,8 @@
 package com.arseniy.socialmediaapi.auth;
 
 
-import com.arseniy.socialmediaapi.exceptions.EmailAlreadyInUseException;
-import com.arseniy.socialmediaapi.exceptions.UsernameAlreadyInUseException;
+import com.arseniy.socialmediaapi.auth.exceptions.EmailAlreadyInUseException;
+import com.arseniy.socialmediaapi.auth.exceptions.UsernameAlreadyInUseException;
 import com.arseniy.socialmediaapi.jwt.JwtService;
 import com.arseniy.socialmediaapi.jwt.TokenType;
 import com.arseniy.socialmediaapi.user.domain.User;
@@ -36,23 +36,13 @@ public class AuthorizationService {
 
     public String register(String username,  String password, String email, String name) throws EmailAlreadyInUseException, UsernameAlreadyInUseException {
 
-        // Validate if user have is already registered
 
-        Optional<User> user =  userRepository.findByEmail(email);
-
-        if(user.isPresent()){
-            throw new UsernameAlreadyInUseException();
-        }
-
-        user = userRepository.findByUsername(username);
-
-
-        if(user.isPresent()){
+        if(userRepository.existsByEmail(email)){
             throw new EmailAlreadyInUseException();
         }
-
-
-        // Add user to db
+        if(userRepository.existsByUsername(username)){
+            throw new UsernameAlreadyInUseException();
+        }
 
         User newUser = new User();
         newUser.setUsername(username);
@@ -62,9 +52,6 @@ public class AuthorizationService {
         newUser.setName(name);
 
         userRepository.save(newUser);
-
-        // Generate token
-
         return jwtService.generateToken(newUser.getUsername(), TokenType.ACCESS);
 
     }
