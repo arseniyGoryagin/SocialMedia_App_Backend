@@ -1,7 +1,6 @@
 package com.arseniy.socialmediaapi.user;
 
 
-import com.arseniy.socialmediaapi.followers.FollowerRepository;
 import com.arseniy.socialmediaapi.user.domain.UserResponse;
 import com.arseniy.socialmediaapi.user.domain.User;
 import com.arseniy.socialmediaapi.user.exceptions.NoSuchUserException;
@@ -24,18 +23,18 @@ import java.util.Optional;
 public class UserService {
 
         private final UserRepository userRepository;
-        private final FollowerRepository followerRepository;
 
+        // TODO make this simpler and better
         private UserResponse userToUserResponse(User u, String currentUserUsername){
                 return UserResponse.builder().
                         id(u.getId())
                         .name(u.getName())
                         .profilePicture(u.getProfilePicture())
                         .description(u.getDescription())
-                        .followsCount(followerRepository.countByFollowerUsername(u.getUsername()))
-                        .followerCount(followerRepository.countByTargetUsername(u.getUsername()))
+                        .followsCount(u.getFollows().size())
+                        .followerCount(u.getFollowers().size())
                         .username(u.getUsername())
-                        .isFollowing(followerRepository.existsByTargetUsernameAndFollowerUsername(u.getUsername(), currentUserUsername))
+                        .isFollowing(u.getFollowers().contains(userRepository.findByUsername(currentUserUsername).get()))
                         .isOwn(Objects.equals(u.getUsername(), currentUserUsername))
                         .build();
         }
@@ -63,17 +62,21 @@ public class UserService {
 
         public Page<UserResponse> getUserFollowers(String username, String currentUserUsername, Pageable pageable){
                 findByUsername(username).orElseThrow(() -> new NoSuchUserException("User does not exist"));
-                return followerRepository.findFollowerByTargetUsername(username, pageable).map( u -> userToUserResponse(u, currentUserUsername));
+                return userRepository.findFollowersByUsername(currentUserUsername, pageable).map( u -> userToUserResponse(u, currentUserUsername));
         }
 
         public Page<UserResponse> getUserFollows(String username, String currentUserUsername, Pageable pageable) {
                 findByUsername(username).orElseThrow(() -> new NoSuchUserException("User does not exist"));
-                return followerRepository.findTargetByFollowerUsername(username, pageable).map( u -> userToUserResponse(u, currentUserUsername));
+                return userRepository.findFollowsByUsername(currentUserUsername, pageable).map( u -> userToUserResponse(u, currentUserUsername));
         }
 
 
         public List<Long> getLikedPostsIds(String username){
                 return userRepository.findLikedPostIdsByUsername(username);
+        }
+
+        public List<Long> getUserFollowIds(String username){
+                return userRepository.findFollowsIdsByUsername(username);
         }
 
 }

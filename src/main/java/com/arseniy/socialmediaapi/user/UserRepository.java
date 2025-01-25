@@ -15,5 +15,11 @@ public interface UserRepository  extends JpaRepository<User, Long> {
     boolean existsByUsername(String username);
     boolean existsByEmail(String username);
     Page<User> findByUsernameStartingWith(String username, Pageable page);
+
     List<Long> findLikedPostIdsByUsername(String username);
+
+    List<Long> findFollowsIdsByUsername(String username);
+
+    Page<User> findFollowersByUsername(String username, Pageable pageable);
+    Page<User> findFollowsByUsername(String username, Pageable pageable);
 }

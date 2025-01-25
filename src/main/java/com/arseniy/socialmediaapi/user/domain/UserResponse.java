@@ -15,8 +15,8 @@ public class UserResponse {
     private  String description;
     private  String profilePicture;
 
-    private Long followerCount;
-    private Long followsCount;
+    private int followerCount;
+    private int followsCount;
 
     private Boolean isOwn;
 

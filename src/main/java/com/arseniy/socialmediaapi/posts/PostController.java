@@ -45,7 +45,7 @@ public class PostController {
     @GetMapping()
     public ResponseEntity<Page<PostResponse>> getFeed(@AuthenticationPrincipal UserDetails userDetails, @RequestParam("page") int page, @RequestParam("size") int size){
         Pageable pageable = PageRequest.of(page, size);
-        return new ResponseEntity<>(postService.getPosts(userDetails.getUsername(),pageable), HttpStatus.OK);
+        return new ResponseEntity<>(postService.getFeed(userDetails.getUsername(),pageable), HttpStatus.OK);
 
     }
   
