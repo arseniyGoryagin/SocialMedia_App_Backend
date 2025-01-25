@@ -10,6 +10,11 @@ import com.arseniy.socialmediaapi.posts.domain.PostResponse;
 import com.arseniy.socialmediaapi.util.responses.MessageResponse;
 import com.arseniy.socialmediaapi.user.domain.User;
 import com.arseniy.socialmediaapi.util.Util;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -22,7 +27,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/posts")
 @RequiredArgsConstructor
-@Slf4j
+@Tag(name = "Posts")
 public class PostController {
 
 
@@ -30,7 +35,8 @@ public class PostController {
 
 
 
-
+    @Operation(summary = "Like post")
+    @ApiResponse(responseCode = "200", description = "Post liked", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MessageResponse.class)))
     @GetMapping("/user/{username}")
     public ResponseEntity<Page<PostResponse>> getUserPosts(@PathVariable("username") String username, @RequestParam("page") int page, @RequestParam("size") int size) {
 
@@ -55,7 +61,6 @@ public class PostController {
         User user  = Util.getCurrentUser();
 
         var response = postService.addPost( request.getBody(), user);
-        log.info(response.toString());
 
         return new ResponseEntity<>(new MessageResponse("Post added"), HttpStatus.OK);
     }

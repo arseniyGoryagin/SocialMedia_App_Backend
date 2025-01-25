@@ -33,7 +33,7 @@ public class CommentController {
     private final CommentService commentService;
 
     @Operation(summary = "Get comments on post")
-    @ApiResponse(responseCode = "200", description = "Comments retrieved", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TokenResponse.class)))
+    @ApiResponse(responseCode = "200", description = "Comments retrieved", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CommentResponse.class)))
     @GetMapping("/{postId}")
     public ResponseEntity<Page<CommentResponse>> getComments(@PathVariable("postId") Long id, @PathParam("page") int page, @PathParam("size") int size){
 
