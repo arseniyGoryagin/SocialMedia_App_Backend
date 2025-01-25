@@ -20,6 +20,8 @@ public class JwtServiceImpl  implements JwtService{
     private final JwtConfig jwtConfig;
 
 
+
+    // TODO add different secrets
     private SecretKey getSecretKey(TokenType tokenType) {
 
         String secret = switch (tokenType){
@@ -37,6 +39,7 @@ public class JwtServiceImpl  implements JwtService{
     private boolean isTokenExpired(String token,TokenType tokenType){
         return getExpDate(token, tokenType).after(new Date());
     }
+
 
     private Date getExpDate(String token, TokenType tokenType){
         Claims claims = Jwts.parser()
@@ -66,7 +69,15 @@ public class JwtServiceImpl  implements JwtService{
 
         long currentTimeMillis = System.currentTimeMillis();
         Date currentTime = new Date(currentTimeMillis);
-        Date expTimeDate = new Date(currentTimeMillis + tokenType.expirationTime);
+
+        Long expTime = switch (tokenType){
+            case ACCESS -> jwtConfig.getExpAccess();
+            case REFRESH -> jwtConfig.getExpRefresh();
+            case RESETPASSWORD -> jwtConfig.getExpReset();
+        };
+
+
+        Date expTimeDate = new Date(currentTimeMillis + expTime);
 
         return Jwts.builder()
                 .subject(username)
