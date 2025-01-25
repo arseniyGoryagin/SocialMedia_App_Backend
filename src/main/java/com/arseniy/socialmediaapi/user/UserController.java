@@ -1,10 +1,10 @@
 package com.arseniy.socialmediaapi.user;
 
 
-import com.arseniy.socialmediaapi.auth.exceptions.EmailAlreadyInUseException;
 import com.arseniy.socialmediaapi.exceptions.ErrorResponse;
 import com.arseniy.socialmediaapi.user.domain.UserResponse;
 import com.arseniy.socialmediaapi.user.exceptions.NoSuchUserException;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -24,7 +24,6 @@ public class UserController {
 
     private final UserService userService;
 
-
     @GetMapping("/{username}/followers")
     public ResponseEntity<Page<UserResponse>> getUserFollowers(@AuthenticationPrincipal UserDetails userDetails, @PathVariable("username") String username, @RequestParam("page") int page, @RequestParam("size") int size){
         Pageable pageable = PageRequest.of(page, size);
@@ -33,7 +32,7 @@ public class UserController {
     }
 
     @GetMapping("/{username}/following")
-    public ResponseEntity<Page<UserResponse>> getUserFollows(@AuthenticationPrincipal UserDetails userDetails, @PathVariable("username") String username, @RequestParam("page") int page, @RequestParam("size") int size){
+    public ResponseEntity<Page<UserResponse>> getUserFollows(@AuthenticationPrincipal UserDetails userDetails, @PathVariable("username") String username,  @RequestParam("page") int page, @RequestParam("size") int size){
         Pageable pageable = PageRequest.of(page, size);
         var userResponse = userService.getUserFollows(username,userDetails.getUsername() , pageable );
         return new ResponseEntity<>(userResponse, HttpStatus.OK);

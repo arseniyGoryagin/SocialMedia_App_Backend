@@ -18,7 +18,7 @@ import java.util.List;
 public interface PostRepository extends JpaRepository<Post, Long> {
 
 
-    @Query(value =
+    /*@Query(value =
             "Select * " +
                     "from posts_table p " +
                     "inner join follow_table f on p.user.id = f.target.id "+
@@ -31,7 +31,10 @@ public interface PostRepository extends JpaRepository<Post, Long> {
                     "inner join user_table u on f.follower_id = u.id " +
                     "where u.username  = :username",
             nativeQuery = true)
-    Page<Post> getFeed(@Param("username") String username, Pageable pageable);
+    Page<Post> getFeed(@Param("username") String username, Pageable pageable);*/
+
+
+    Page<Post> findByUserIdIn(List<Long> ids, Pageable pageable);
 
     Page<Post> findByUserUsernameOrderByTimePostedDesc(String username, Pageable page);
 

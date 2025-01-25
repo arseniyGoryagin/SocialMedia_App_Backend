@@ -42,6 +42,25 @@ public class User implements UserDetails {
     private String email;
     private Role role;
 
+
+    @ManyToMany()
+    @JoinTable(
+            name = "user_follows",
+            joinColumns = @JoinColumn( name = "user"),
+            inverseJoinColumns = @JoinColumn(name = "follows")
+    )
+    @JsonIgnore
+    private Set<User> follows = new HashSet<>();
+
+    @ManyToMany()
+    @JoinTable(
+            name = "user_followers",
+            joinColumns = @JoinColumn( name = "user"),
+            inverseJoinColumns = @JoinColumn(name = "followers")
+    )
+    @JsonIgnore
+    private Set<User> followers = new HashSet<>();
+
     @ManyToMany()
     @JsonIgnore
     private Set<Post> likes = new HashSet<>();

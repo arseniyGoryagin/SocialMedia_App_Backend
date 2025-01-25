@@ -47,16 +47,10 @@ public class PostService {
                 .build();
     }
 
-
-
-    public Page<PostResponse> getPosts(String currentUserUsername, Pageable pageable){
-       return postRepository.findAll(pageable).map(post -> toPostResponseFromPost(post, currentUserUsername));
-    }
-
     public Page<PostResponse> getFeed(String currentUserUsername, Pageable pageable){
-        return postRepository.findAll(pageable).map(post -> toPostResponseFromPost(post, currentUserUsername));
+        List<Long> followIds = userService.getUserFollowIds(currentUserUsername);
+        return postRepository.findByIdIn(followIds, pageable).map(post -> toPostResponseFromPost(post, currentUserUsername));
     }
-
 
     public PostResponse addPost(String body, User user){
 
@@ -102,7 +96,6 @@ public class PostService {
     public Page<PostResponse> getAllUserPosts(String username, String currentUserUsername, Pageable pageable){
         return postRepository.findByUserUsernameOrderByTimePostedDesc(username, pageable).map(post -> toPostResponseFromPost(post, currentUserUsername));
     }
-
 
 
     //
