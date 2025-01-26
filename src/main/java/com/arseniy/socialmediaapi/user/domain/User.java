@@ -43,27 +43,36 @@ public class User implements UserDetails {
     private Role role;
 
 
-    @ManyToMany()
+    @ManyToMany(cascade = CascadeType.REMOVE)
     @JoinTable(
             name = "user_follows",
-            joinColumns = @JoinColumn( name = "user"),
-            inverseJoinColumns = @JoinColumn(name = "follows")
+            joinColumns = @JoinColumn( name = "follower_id"),
+            inverseJoinColumns = @JoinColumn(name = "follows_id")
     )
     @JsonIgnore
     private Set<User> follows = new HashSet<>();
 
-    @ManyToMany()
+    @ManyToMany(cascade = CascadeType.REMOVE)
     @JoinTable(
             name = "user_followers",
-            joinColumns = @JoinColumn( name = "user"),
-            inverseJoinColumns = @JoinColumn(name = "followers")
+            joinColumns = @JoinColumn( name = "follows_id"),
+            inverseJoinColumns = @JoinColumn(name = "followers_id")
     )
     @JsonIgnore
     private Set<User> followers = new HashSet<>();
 
-    @ManyToMany()
+    @ManyToMany(cascade = CascadeType.REMOVE)
     @JsonIgnore
+    @JoinTable(
+            name = "user_likes",
+            joinColumns = @JoinColumn( name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "post_id")
+    )
     private Set<Post> likes = new HashSet<>();
+
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private Set<Post> posts = new HashSet<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

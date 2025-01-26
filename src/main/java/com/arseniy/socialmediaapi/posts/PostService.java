@@ -34,9 +34,9 @@ public class PostService {
 
         return PostResponse.builder()
                 .id(post.getId())
-                .likes(userService.getLikedPostsIds(currentUserUsername).size())
+                .likes(0) //TODO
                 .comments(commentRepository.countByPostId(post.getId()))
-                .liked(userService.getLikedPostsIds(currentUserUsername).contains(post.getId()))
+                .liked(postRepository.existsByLiked(user))
                 .body(post.getBody())
                 .edited(post.getEdited())
                 .username(user.getUsername())
@@ -62,8 +62,9 @@ public class PostService {
                 .timePosted(LocalDateTime.now())
                 .build();
 
-
-        return toPostResponseFromPost(postRepository.save(post), user.getUsername());
+        Post madePost = postRepository.save(post);
+        System.out.println(post.getId());
+        return toPostResponseFromPost(madePost, user.getUsername());
     }
 
 
@@ -99,11 +100,8 @@ public class PostService {
 
 
     //
-    public Page<PostResponse> getAllPostsByIds(List<Long> postId, String currentUserUsername, Pageable pageable) {
-        return postRepository.findByIdIn(postId, pageable).map(post -> toPostResponseFromPost(post, currentUserUsername));
-    }
-    public Page<PostResponse> getUserLikes(String currentUserUsername, Pageable pageable) {
-        List<Long> likedIds = userService.getLikedPostsIds(currentUserUsername);
-        return getAllPostsByIds(likedIds, currentUserUsername, pageable);
+
+    public Page<PostResponse> getUserLikes(User user, Pageable pageable) {
+        return postRepository.findByLiked(user, pageable).map(post -> toPostResponseFromPost(post, user.getUsername()));
     }
 }

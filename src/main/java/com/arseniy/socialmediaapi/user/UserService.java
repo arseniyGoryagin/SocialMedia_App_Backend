@@ -71,12 +71,10 @@ public class UserService {
         }
 
 
-        public List<Long> getLikedPostsIds(String username){
-                return userRepository.findLikedPostIdsByUsername(username);
-        }
 
         public List<Long> getUserFollowIds(String username){
-                return userRepository.findFollowsIdsByUsername(username);
+                User user = userRepository.findByUsername(username).orElseThrow(() -> new NoSuchUserException("No such user"));
+                return userRepository.findFollowsIdsByUsername(user.getId());
         }
 
 }
