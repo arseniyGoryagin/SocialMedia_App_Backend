@@ -24,13 +24,13 @@ public class JwtServiceImpl  implements JwtService{
     // TODO add different secrets
     private SecretKey getSecretKey(TokenType tokenType) {
 
-        String secret = switch (tokenType){
+        /*String secret = switch (tokenType){
             case ACCESS -> jwtConfig.getTokenSecret();
             case REFRESH -> jwtConfig.getTokenSecret();
             case RESETPASSWORD -> jwtConfig.getTokenSecret();
-            };
+            };*/
 
-        byte[] keyBytes = Decoders.BASE64.decode(secret);
+        byte[] keyBytes = Decoders.BASE64.decode(jwtConfig.getSecret());
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
