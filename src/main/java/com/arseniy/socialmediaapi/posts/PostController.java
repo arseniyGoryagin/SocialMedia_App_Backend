@@ -51,7 +51,7 @@ public class PostController {
   
    @PostMapping()
     public ResponseEntity<MessageResponse> addPost(@AuthenticationPrincipal UserDetails userDetails,@RequestBody PostRequest request) {
-        postService.addPost( request.getBody(), (User) userDetails);
+        postService.addPost(request.getBody(), (User) userDetails);
         return new ResponseEntity<>(new MessageResponse("Post added"), HttpStatus.OK);
     }
 
@@ -71,7 +71,7 @@ public class PostController {
 
     @GetMapping("/likes/{username}")
     public ResponseEntity<Page<PostResponse>> getUserLikes(@AuthenticationPrincipal UserDetails userDetails, @PathVariable("username") String username, @RequestParam("page") int page, @RequestParam("size") int size){
-        Page<PostResponse> likes = postService.getUserLikes(userDetails.getUsername(),PageRequest.of(page, size));
+        Page<PostResponse> likes = postService.getUserLikes((User)userDetails,PageRequest.of(page, size));
         return new ResponseEntity<>(likes, HttpStatus.OK);
     }
 

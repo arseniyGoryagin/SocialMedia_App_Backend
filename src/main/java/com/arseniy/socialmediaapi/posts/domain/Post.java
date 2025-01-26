@@ -15,7 +15,6 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "posts_table")
 public class Post {
 
     @Id
@@ -24,7 +23,7 @@ public class Post {
 
     private String body;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne()
     @JoinColumn(name = "user_id")
     private User user;
 

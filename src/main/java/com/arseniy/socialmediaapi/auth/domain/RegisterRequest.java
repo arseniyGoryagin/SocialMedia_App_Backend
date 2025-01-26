@@ -35,7 +35,7 @@ public class RegisterRequest {
 
     @NotBlank(message = "name must not be blank")
     @Schema(description = "Name of the user", example = "password")
-    @Size(min = 5, max = 30, message = "Username must be longer than 5 characters")
+    @Size(min = 1, max = 30, message = "Name must be longer than 5 characters")
     private String name;
 
 
